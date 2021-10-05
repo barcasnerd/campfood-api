@@ -1,6 +1,4 @@
-# Prueba técnica SmartSoft labs
-
-Prueba técnica para la vacante de desarrollador web backend.
+# Campfood Backend API
 
 ## Installation
 
@@ -18,9 +16,4 @@ Run the docker compose images to wake up the services by using the following com
 
 `docker-compose up`
 
-## Usage
-
-Go to the following url on your local machine, then follow the OpenApi/Swagger documentation to get more information:
-
-`http://localhost/`
 
