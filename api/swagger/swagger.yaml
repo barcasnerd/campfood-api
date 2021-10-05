@@ -1,0 +1,508 @@
+openapi: 3.0.0
+info:
+  title: Product Purchase API
+  description: Thechnical assesment api for web backend developer for smartsoft labs company. **Hint:** Must to run containers on local, then use the **Try it out** function.
+  version: 1.0.0
+servers:
+  - url: http://localhost/api/v1
+    description: Develompent (dev) server
+tags:
+- name: auth
+- name: product
+- name: purchase
+paths:
+  /auth/login:
+    post:
+      tags:
+        - auth
+      summary: Login an user
+      description: Authenticates an user and save to local session
+      responses:
+        '200':
+          description: A JSON string within a success message
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  msg: 
+                    type: string
+                    description: Login message
+                example:
+                  msg: Logged in
+      requestBody:
+        content:
+          application/json:
+            schema:      # Request body contents
+              type: object
+              properties:
+                email:
+                  type: string
+                password:
+                  type: string
+              example:   # Sample object
+                email: example@example.com
+                password: examplePassword
+
+  /auth/register:
+    post:
+      tags:
+        - auth    
+      summary: Resgister an user
+      description: Creates a new user
+      responses:
+        '201':
+          description: A JSON string within a success message
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  msg: 
+                    type: string
+                    description: Resgister message
+                example:
+                  msg: Succesfully saved
+        '400':
+          description: A JSON string within a failed message
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  msg: 
+                    type: string
+                    description: failed registration
+                example:
+                  msg: Email already exist
+      requestBody:
+        content:
+          application/json:
+            schema:      # Request body contents
+              type: object
+              properties:
+                email:
+                  type: string
+                password:
+                  type: string
+                name:
+                  type: string
+                money:
+                  type: integer                  
+              example:   # Sample object
+                email: example@example.com
+                password: examplePassword     
+                name: Example User
+                money: 80000
+                
+  /auth/setting:
+    post:
+      tags:
+        - auth    
+      summary: Edit an user
+      description: Edit current local sessionan user
+      responses:
+        '200':
+          description: A JSON object with the user updated
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: string
+                  name:
+                    type: string                  
+                  password:
+                    type: string                  
+                  email:
+                    type: string                  
+                  money:
+                    type: integer                  
+                example:
+                 id: asdlkn1211lqskwnd
+                 name: Example
+                 password: examplepassowrd
+                 email: example@example.com
+                 money: 23422
+        '404':
+          description: failed update
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  msg: 
+                    type: string
+                    description: failed update
+                example:
+                  msg: User not found
+      requestBody:
+        content:
+          application/json:
+            schema:      # Request body contents
+              type: object
+              properties:
+                email:
+                  type: string
+                password:
+                  type: string
+                name:
+                  type: string
+                money:
+                  type: integer                  
+              example:   # Sample object
+                email: example@example.com
+                password: examplePassword     
+                name: Example User
+                money: 80000
+  /auth/users:
+    get:
+      tags:
+        - auth    
+      summary: get users
+      description: gets a list of users using and simple admin user generated
+      responses:
+        '200':
+          description: A JSON array of the users list
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ProductPurchase'
+        '401':
+          description: not an admin user
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  msg: 
+                    type: string
+                    description: failed listing
+                example:
+                  msg: Access for admin only
+  /products:
+    get:
+      tags:
+        - product    
+      summary: get products
+      description: gets a list of products of the authenticated current user
+      responses:
+        '200':
+          description: A JSON array of the product list
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Product'
+    post:
+      tags:
+        - product    
+      summary: create a product
+      description: Creates a new product
+      responses:
+        '201':
+          description: A JSON string with the created product
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id: 
+                    type: string
+                  name: 
+                    type: string
+                  category: 
+                    type: string
+                  price: 
+                    type: integer
+                  quantity: 
+                    type: integer                    
+      requestBody:
+        content:
+          application/json:
+            schema:      # Request body contents
+              type: object
+              properties:
+                id: 
+                  type: string
+                name: 
+                  type: string
+                category: 
+                  type: string
+                price: 
+                  type: integer
+                quantity: 
+                  type: integer       
+  /products/{id}:
+    get:
+      summary: Get product
+      tags:
+      - product
+      description: Gets a single product based on its id
+      responses:
+        '200':
+          description: A JSON object whith the product found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Product'
+        '404':
+          description: id wasn't found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  msg: 
+                    type: string
+                example:
+                  msg: Product not found
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: integer
+          required: true
+          description: Numeric ID of the user to get
+    
+    put:
+      summary: Edit product
+      tags:
+      - product
+      description: Edit a product found by its id
+      responses:
+        '200':
+          description: A JSON object whith product the updated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Product'
+        '404':
+          description: id wasn't found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  msg: 
+                    type: string
+                example:
+                  msg: Product not found
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: integer
+          required: true
+      requestBody:
+        content:
+          application/json:
+            schema:      # Request body contents
+              $ref: '#/components/schemas/Product'  
+    delete:
+      summary: delete product
+      tags:
+        - product
+      description: delete a product found by its id
+      responses:
+        '200':
+          description: OK
+        '404':
+          description: id wasn't found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  msg: 
+                    type: string
+                example:
+                  msg: Product not found
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: integer
+          required: true
+
+  /purchases:
+    get:
+      tags:
+        - purchase
+      summary: get purchase
+      description: gets a list of purchases of the authenticated current user
+      responses:
+        '200':
+          description: A JSON array of the purchase list
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ProductPurchase'
+    post:
+      tags:
+        - purchase    
+      summary: create a purchase
+      description: Creates a new purchase
+      responses:
+        '201':
+          description: A JSON string with the created purchase
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProductPurchase'          
+        '400':        
+          description: Failed
+      requestBody:
+        content:
+          application/json:
+            schema:      # Request body contents
+              type: object
+              properties:
+                schema:
+                  type: array
+                  items:
+                    type: string
+              example:
+                {"productList":["12","213","3"]}
+                
+  /purchases/{id}:
+    get:
+      summary: Get purchase
+      tags:
+      - purchase
+      description: Gets a single purchase based on its id
+      responses:
+        '302':
+          description: A JSON object whith the purchase found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProductPurchase'
+        '404':
+          description: id wasn't found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  msg: 
+                    type: string
+                example:
+                  msg: Purchase id not found
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: integer
+          required: true
+    
+    put:
+      tags:
+        - purchase    
+      summary: update a purchase
+      description: update a  purchase
+      responses:
+        '200':
+          description: A JSON string with the updated purchase
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProductPurchase'          
+        '400':        
+          description: Failed
+      requestBody:
+        content:
+          application/json:
+            schema:      # Request body contents
+              type: object
+              properties:
+                schema:
+                  type: array
+                  items:
+                    type: string
+              example:
+                {"productList":["12","213","3"]}
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: integer
+          required: true
+          
+    delete:
+      summary: delete purchase
+      tags:
+        - purchase
+      description: delete purchase by its id
+      responses:
+        '200':
+          description: OK
+        '404':
+          description: id wasn't found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  msg: 
+                    type: string
+                example:
+                  msg: Purchase id not found
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: integer
+          required: true
+
+
+          
+components:
+  schemas:
+    Product:
+      type: object
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        category:
+          type: string
+        price:
+          type: integer          
+        quantity:
+          type: integer  
+    User:
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        password:
+          type: string
+        email:
+          type: string          
+        money:
+          type: integer
+    ProductPurchase:
+      type: object
+      properties:
+        id:
+          type: integer
+        purchaseDate:
+          type: string
+        total:
+          type: integer
+        user: 
+          $ref: '#/components/schemas/User'
+        products:
+          type: array
+          items:
+            $ref: '#/components/schemas/Product'
