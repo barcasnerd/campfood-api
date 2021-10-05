@@ -40,7 +40,7 @@ app.use(passport.session());
 
 // routes
 app.use('/api/v1/auth',authRoutes);
-app.use('/api/v1/packages', authValidator, productRoutes);
+app.use('/api/v1/packages', productRoutes);
 //app.use('/api/v1/purchases', authValidator, purchaseRoutes);
 
 // start the server
